@@ -256,8 +256,11 @@ class TwitterOAuth
         curl_setopt_array($ci, $options);
         $response = curl_exec($ci);
         $this->last_http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
+        $header_size = curl_getinfo($ci, CURLINFO_HEADER_SIZE);
+
         if (empty($this->proxy)) {
-            list($header, $body) = explode("\r\n\r\n", $response, 2);
+            $header = substr($response, 0, $header_size);
+            $body = substr($response, $header_size);
         } else {
             list($connect, $header, $body) = explode("\r\n\r\n", $response, 3);
         }
